@@ -2,12 +2,19 @@
 bin/
 bin-debug/
 bin-release/
+relase/
 
 # Other files and folders
 .settings/
+Lib/
+VSMacros80/
+MyRegex/
+obj/
 
 # WTF
-.suo
+\#FA/
+\#Tests
+*.suo
 
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
