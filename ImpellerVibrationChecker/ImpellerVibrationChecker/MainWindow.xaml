@@ -1,0 +1,458 @@
+﻿ <!-- Copyright (C) 2012  Byzod
+   - Contact me : byzzod@gmail.com
+   -
+   - This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.  -->
+   
+<Window x:Class="ImpellerVibrationChecker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="IVCMain" Title="app name+version in init" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" Height="510" Width="647" 
+        xmlns:local="clr-namespace:ImpellerVibrationChecker" ResizeMode="CanResizeWithGrip" MinWidth="440" MinHeight="510" Tag="1" WindowStartupLocation="CenterScreen" AllowDrop="True" DragEnter="IVCMain_DragEnter" Drop="IVCMain_Drop">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="White" Offset="0" />
+            <GradientStop Color="#FFDEDEDE" Offset="1" />
+        </LinearGradientBrush>
+    </Window.Background>
+    <Window.CommandBindings>
+        <CommandBinding Command="New" Executed="New_Executed"/>
+        <CommandBinding Command="Open" Executed="Open_Executed"/>
+        <CommandBinding Command="Save" Executed="Save_Executed"/>
+        <CommandBinding Command="SaveAs" Executed="SaveAs_Executed"/>
+        <CommandBinding Command="Close" Executed="Close_Executed"/>
+        <CommandBinding Command="Copy" Executed="Copy_Executed"/>
+        <CommandBinding Command="Paste" Executed="Paste_Executed"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="SaveAs" Key="S" Modifiers="Ctrl+Alt" ></KeyBinding>
+    </Window.InputBindings>
+    <Grid>
+        <DockPanel Name="mainLayout">
+            <!--Header-->
+            <DockPanel Name="headerLayout" DockPanel.Dock="Top">
+                <Menu Height="24" Name="mainMenu"  DockPanel.Dock="Top" IsMainMenu="True" Background="{StaticResource Gradient1}">
+                    <MenuItem Header="文件(_F)" Name="file">
+                        <MenuItem Header="新建叶片(_N)" Name="new" Command="New"/>
+                        <MenuItem Header="打开/导入(_O)" Name="open" Command="Open" CommandParameter="full"/>
+                        <MenuItem Header="保存/导出(_S)" Name="save" Command="Save" />
+                        <MenuItem Header="另存为/导出" Name="saveAs" Command="SaveAs" CommandParameter="full" InputGestureText="Ctrl+Alt+S"/>
+                        <Separator />
+                        <MenuItem Header="退出(_X)" Name="quit" Command="Close"/>
+                    </MenuItem>
+                    <MenuItem Header="编辑(_E)" Name="edit">
+                        <MenuItem Header="撤销(_U)" Name="undo" Command="Undo"/>
+                        <MenuItem Header="重做(_R)" Name="redo" Command="Redo"/>
+                        <Separator />
+                        <MenuItem Header="复制叶片(_C)" Name="copy" Command="Copy"/>
+                        <MenuItem Header="粘贴叶片(_V)" Name="paste" Command="Paste"/>
+                        <Separator />
+                        <MenuItem Header="复制叶片参数(_A)" Name="copyArgs" Click="copyImpellerArgsBtn_Click"/>
+                        <MenuItem Header="粘贴叶片参数" Name="pasteArgs" Click="pasteImpellerArgsBtn_Click"/>
+                        <MenuItem Header="复制截面(_S)" Name="copySec" Click="copySectionsDataBtn_Click"/>
+                        <MenuItem Header="粘贴截面" Name="pasteSec" Click="pasteSectionsDataBtn_Click"/>
+                        <MenuItem Header="复制结果(_R)" Name="copyRslt" Click="copyResultBtn_Click"/>
+                        <MenuItem Header="粘贴结果" Name="pasteRslt" Click="pasteResultBtn_Click"/>
+                    </MenuItem>
+                    <MenuItem Header="工具(_T)" Name="tools">
+                        <MenuItem Header="简单叶片生成器(_S)" Name="impellerGenerator" Click="impellerGeneratorBtn_Click"/>
+                        <MenuItem Header="振型对比工具(_Y)" Name="yComparer" Click="yComparerBtn_Click"/>                        
+                    </MenuItem>
+                    <MenuItem Header="帮助(_H)" Name="other">
+                        <MenuItem Header="打开IVC帮助文件(_H)" Name="help" Click="helpBtn_Click"/>
+                        <Separator/>
+                        <MenuItem Header="关于..." Name="about" Click="aboutBtn_Click" />
+                    </MenuItem>
+                    <Separator></Separator>
+                </Menu>
+                <ToolBar DockPanel.Dock="Right" Name="mainToolbar" Background="{StaticResource Gradient1}">
+                    <ToolBar.Resources>
+                        <LinearGradientBrush x:Key="ToolBorder" EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFDBDBDB" Offset="0" />
+                            <GradientStop Color="#FFADADAD" Offset="1" />
+                            <GradientStop Color="#FFCBCBCB" Offset="0.68" />
+                        </LinearGradientBrush>
+                    </ToolBar.Resources>
+                    <Button Click="impellerGeneratorBtn_Click" BorderBrush="{StaticResource ToolBorder}">
+                        <Button.ToolTip>
+                            通过形态和物性参数自动生成简单几何形状叶片的截面参数
+                        </Button.ToolTip>
+                        简单叶片生成器
+                    </Button>
+                    <Button Click="yComparerBtn_Click" BorderBrush="{StaticResource ToolBorder}">
+                        <Button.ToolTip>
+                            通过给定的叶片对比雷利法和振型迭代法的振型结果
+                        </Button.ToolTip>
+                        振型对比工具
+                    </Button>
+                </ToolBar>
+            </DockPanel>
+            
+            <!--Status bar-->
+            <StatusBar Height="20" Name="statusBar" DockPanel.Dock="Bottom">
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="210"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <StatusBarItem Grid.Column="0" Grid.ColumnSpan="2">
+                    <TextBlock Name="statusMessage" Text="statusMessage"></TextBlock>
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="2" Visibility="Visible">
+                    <ProgressBar Name="progressBar" Height="14" Width="200" />
+                </StatusBarItem>                
+                <StatusBarItem Grid.Column="3">
+                    <ResizeGrip />
+                </StatusBarItem>
+                <StatusBar.Background>
+                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                        <GradientStop Color="#FFEEEEEE" Offset="0" />
+                        <GradientStop Color="#FFDEDEDE" Offset="1" />
+                    </LinearGradientBrush>
+                </StatusBar.Background>
+            </StatusBar>
+            
+            <!--Content-->
+            <Grid Margin="3,3,3,3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" Name="sectionsPanel"/>
+                    <ColumnDefinition Width="1*" Name="configPanel"/>
+                    <ColumnDefinition Width="1*" Name="resultPanel"/>
+                </Grid.ColumnDefinitions>
+                   
+                <!--Sections data-->
+                <Grid Name="sectionsGrid" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="7*" />
+                        <RowDefinition Height="100" />
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="截面参数选项" Margin="6,0,6,6" Name="sectionsBtns" Grid.Row="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="2*" />                                
+                            </Grid.ColumnDefinitions>
+                            <Button Content="确定" Name="updateSectionsDataBtn" Margin="3,6,6,6" Click="updateSectionsDataBtn_Click" Grid.Column="3" Grid.RowSpan="2" Background="{StaticResource Gradient1}" ToolTip="确认截面数据设置并返回参数设置界面" />
+                            <Button Content="复制" Name="copySectionsDataBtn" Margin="6,6,3,1" Background="{StaticResource Gradient1}" Click="copySectionsDataBtn_Click" ToolTip="复制所有截面数据"/>
+                            <Button Content="粘贴" Name="pasteSectionsDataBtn" Margin="6,1,3,6" Grid.Row="1" Background="{StaticResource Gradient1}" Click="pasteSectionsDataBtn_Click" ToolTip="从剪切板中粘贴截面数据"/>
+                            <Button Content="导入" Name="importSectionsDataBtn" Margin="3,6,3,1" Grid.Column="1" Background="{StaticResource Gradient1}" Command="Open" CommandParameter="sec" ToolTip="从叶片文件中导入截面数据"/>
+                            <Button Content="导出" Name="exportSectionsDataBtn" Margin="3,1,3,6" Grid.Column="1" Grid.Row="1" Background="{StaticResource Gradient1}" Command="SaveAs" CommandParameter="sec" ToolTip="将所有截面数据导出到叶片文件中"/>
+                            <Button Name="addSectionBtn" Background="{StaticResource Gradient1}"  Margin="3,6,64,1" Grid.Column="2" Click="addSectionBtn_Click">
+                                <TextBlock TextWrapping="Wrap">增加截面</TextBlock>
+                            </Button>
+                            <Button Name="deleteSelectedSectionBtn" Background="{StaticResource Gradient1}" Margin="3,1,3,6" Grid.Column="2" Grid.Row="1" Click="deleteSelectedSectionBtn_Click">
+                                <TextBlock TextWrapping="Wrap">删除选中的截面</TextBlock>
+                            </Button>
+                            <TextBox Grid.Column="2" Margin="0,10,23,3" Name="addSectionCountBox" Text="1" Background="{StaticResource Gradient2}" GotFocus="textBoxSelectionGlow" LostFocus="textBoxSelectionGlow" HorizontalAlignment="Right" Width="33" TextChanged="addSectionCountBox_TextChanged" Tag="1" />
+                            <TextBlock Grid.Column="2" Margin="0,12,3,1" Text="个" HorizontalAlignment="Right" Width="14" />
+                        </Grid>
+                    </GroupBox>
+                    <Grid Name="sectionsDataGrid" >
+                        <DataGrid AutoGenerateColumns="False" Name="sectionsData"  Margin="12,25,12,12">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="位置(m)" 
+                                                    EditingElementStyle="{StaticResource errorToolTip}"
+                                                    Width="1*">
+                                    <DataGridTextColumn.Binding>
+                                        <Binding Path="Position" Converter="{StaticResource d2sConverter}" >
+                                            <Binding.ValidationRules>
+                                                <local:ImpellerArgsRule/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="主惯性矩(m^4)" 
+                                                    EditingElementStyle="{StaticResource errorToolTip}"
+                                                    Width="1*"
+                                                    >
+                                    <DataGridTextColumn.Binding>
+                                        <Binding Path="InertiaMoment" Converter="{StaticResource d2sConverter}" >
+                                            <Binding.ValidationRules>
+                                                <local:ImpellerArgsRule IsCanBeZero ="false"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="面积(m^2)" 
+                                                    EditingElementStyle="{StaticResource errorToolTip}"
+                                                    Width="1*">
+                                    <DataGridTextColumn.Binding>
+                                        <Binding Path="Area" Converter="{StaticResource d2sConverter}">
+                                            <Binding.ValidationRules>
+                                                <local:ImpellerArgsRule IsCanBeZero ="false"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="质量(kg)" 
+                                                    EditingElementStyle="{StaticResource errorToolTip}"
+                                                    Width="1*">
+                                    <DataGridTextColumn.Binding>
+                                        <Binding Path="Mass" Converter="{StaticResource d2sConverter}">
+                                            <Binding.ValidationRules>
+                                                <local:ImpellerArgsRule IsCanBeZero ="false"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>                            
+                        </DataGrid>
+                        <TextBlock Height="23" HorizontalAlignment="Left" Margin="12,6,0,0" Name="sectionsHeaderText" Text="截面参数设置" VerticalAlignment="Top" Width="77" />
+                    </Grid>
+                </Grid>
+                
+                <!--Arguments data-->
+                <Grid Name="configGrid" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="80" />
+                        <RowDefinition Height="140" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    
+                    <!--General settings-->
+                    <Grid Name="generalArgsGroup" Height="80">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25*" />
+                            <RowDefinition Height="55*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="80" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Name="methodChoiceGroup">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" MinWidth="120"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="计算方法: " Name="methodChoiceText" Margin="6,0,0,0" HorizontalAlignment="Left"/>
+                            <ComboBox Name="methodChoice" Grid.Column="1" Margin="0,0,6,0" Background="{StaticResource Gradient1}" SelectionChanged="methodChoice_SelectionChanged">
+                                <ComboBox.ToolTip>
+                                    选择计算所使用的方法
+                                </ComboBox.ToolTip>
+                            </ComboBox>
+                        </Grid>
+                        <UniformGrid Name="generalBtns" Grid.Row="1" Rows="1" Margin="6">
+                            <Button Background="{StaticResource Gradient1}" Name="copyImpellerArgsBtn" Click="copyImpellerArgsBtn_Click">
+                                <Button.ToolTip>
+                                    将叶片参数和计算参数复制到剪切板，不含截面
+                                </Button.ToolTip>
+                                <TextBlock TextWrapping="Wrap">复制参数</TextBlock>
+                            </Button>
+                            <Button Background="{StaticResource Gradient1}" Name="pasteImpellerArgsBtn" Click="pasteImpellerArgsBtn_Click">
+                                <Button.ToolTip>
+                                    从剪切板粘贴叶片参数和计算参数，不含截面
+                                </Button.ToolTip>
+                                <TextBlock TextWrapping="Wrap">粘贴参数</TextBlock>
+                            </Button>
+                            <Button Background="{StaticResource Gradient1}" Name="importImpellerBtn" Command="Open" CommandParameter="full">
+                                <Button.ToolTip>
+                                    从叶片文件导入所有参数、截面和计算结果，不含图像
+                                </Button.ToolTip> 
+                                <TextBlock TextWrapping="Wrap">导入</TextBlock>
+                                </Button>
+                            <Button Background="{StaticResource Gradient1}" Name="exportImpellerBtn" Command="SaveAs" CommandParameter="full">
+                                <Button.ToolTip>
+                                    将所有参数、截面和计算结果导出为叶片文件，不含图像
+                                </Button.ToolTip>
+                                <TextBlock TextWrapping="Wrap">导出</TextBlock>
+                                </Button>                            
+                        </UniformGrid>
+                        <Button Content="计算" Grid.Column="1" Margin="0,0,6,6" Name="runBtn" Grid.RowSpan="2" Click="runBtn_Click" Background="{StaticResource Gradient1}" FontSize="24" Effect="{x:Null}"/>
+                    </Grid>
+                    
+                    <!--Impeller settings-->
+                    <GroupBox Header="叶片参数" Margin="6,0,6,6" Name="impellerArgsGroup" Grid.Row="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                            </Grid.RowDefinitions>
+                            <Button Margin="6" Name="sectionsBtn" Click="sectionsBtn_Click" Grid.Row="1" Grid.Column="1" MaxWidth="140" MinWidth="60" Background="{StaticResource Gradient1}" ToolTip="切换到截面数据设置界面">
+                                <TextBlock TextWrapping="Wrap">设置截面参数</TextBlock>
+                            </Button>
+                            <TextBox Margin="6,0,6,6" Name="impellerHeight" Height="22" VerticalAlignment="Bottom" Background="{StaticResource Gradient2}" GotFocus="textBoxSelectionGlow" LostFocus="textBoxSelectionGlow" Style="{StaticResource errorToolTip}">
+                                <TextBox.Text>
+                                    <Binding Path="Height">
+                                        <Binding.ValidationRules>
+                                            <local:ImpellerArgsRule IsCanBeZero ="false"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBox Margin="6,0,6,6" Name="impellerDensity" Grid.Column="1" Height="22" VerticalAlignment="Bottom" GotFocus="textBoxSelectionGlow" LostFocus="textBoxSelectionGlow" Background="{StaticResource Gradient2}" Style="{StaticResource errorToolTip}">
+                                <TextBox.Text>
+                                    <Binding Path="Density" >
+                                        <Binding.ValidationRules>
+                                            <local:ImpellerArgsRule IsCanBeZero ="false"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBox Margin="6,0,6,6" Name="impellerE" Grid.Row="1" Height="22" VerticalAlignment="Bottom" Background="{StaticResource Gradient2}" GotFocus="textBoxSelectionGlow" LostFocus="textBoxSelectionGlow" Style="{StaticResource errorToolTip}">
+                                <TextBox.Text>
+                                    <Binding Path="E" >
+                                        <Binding.ValidationRules>
+                                            <local:ImpellerArgsRule IsCanBeZero ="false"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock HorizontalAlignment="Left" Margin="6,6,0,0" Name="impellerHeightHeader" Text="高度(m)" Height="16" VerticalAlignment="Top" />
+                            <TextBlock HorizontalAlignment="Left" Margin="6,6,0,0" Name="impellerDensityHeader" Text="密度(kg/m^3)" Grid.Column="1" Height="16" VerticalAlignment="Top" />
+                            <TextBlock HorizontalAlignment="Left" Margin="6,6,0,0" Name="impellerEHeader" Text="弹性模量(Pa)" Grid.Row="1" Height="16" VerticalAlignment="Top" />
+                        </Grid>
+                    </GroupBox>
+                    
+                    <!--Calculation settings-->
+                    <GroupBox Header="计算参数" Margin="6" Name="methodArgsGroup" Grid.Row="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="53" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="21*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock HorizontalAlignment="Left" Margin="6,6,0,0" Name="methodFromFreqHeader" Text="起始频率(Hz)" Height="19" VerticalAlignment="Top" />
+                            <TextBlock HorizontalAlignment="Left" Margin="6,6,0,0" Name="methodToFreqHeader" Text="终止频率(Hz)" Grid.Column="1" Height="19" VerticalAlignment="Top" />
+                            <TextBlock Margin="6,0,0,0" Name="methodStepHeader" Text="步长(Hz)" Grid.Row="1" HorizontalAlignment="Left" Width="47" Height="18" VerticalAlignment="Top" />
+                            <TextBox Height="22" Margin="6,0,6,6" Name="methodFromFreq" VerticalAlignment="Bottom" Background="{StaticResource Gradient2}" GotFocus="textBoxSelectionGlow" LostFocus="textBoxSelectionGlow" Style="{StaticResource errorToolTip}">
+                                <TextBox.Text>
+                                    <Binding Path="CheckFromOmega" Converter="{StaticResource w2fConverter}"  >
+                                        <Binding.ValidationRules>
+                                            <local:ImpellerArgsRule/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBox Margin="6,0,6,6" Name="methodToFreq" Grid.Column="1" Height="22" VerticalAlignment="Bottom" Background="{StaticResource Gradient2}" GotFocus="textBoxSelectionGlow" LostFocus="textBoxSelectionGlow" Style="{StaticResource errorToolTip}">
+                                <TextBox.Text>
+                                    <Binding Path="CheckToOmega" Converter="{StaticResource w2fConverter}" >
+                                        <Binding.ValidationRules>
+                                            <local:ImpellerArgsRule/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBox Height="22" Margin="6,0,6,7" Name="methodStep" VerticalAlignment="Bottom" Grid.Row="1" Background="{StaticResource Gradient2}" GotFocus="textBoxSelectionGlow" LostFocus="textBoxSelectionGlow" Style="{StaticResource errorToolTip}">
+                                <TextBox.Text>
+                                    <Binding Path="ProhlStep" Converter="{StaticResource w2fConverter}" >
+                                        <Binding.ValidationRules>
+                                            <local:ImpellerArgsRule IsCanBeZero ="false"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                            <TextBlock HorizontalAlignment="Left" Margin="7,3,0,0" Name="methodMinTorHeader" Text="期望精度" Grid.Column="1" Grid.Row="1" Height="15" VerticalAlignment="Top" />
+                            <TextBox Height="22" Margin="6,0,6,6" Name="methodMinTor" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="1" Background="{StaticResource Gradient2}" GotFocus="textBoxSelectionGlow" LostFocus="textBoxSelectionGlow">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource errorToolTip}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=methodChoice}" Value="1">
+                                                <Setter Property="Text">
+                                                    <Setter.Value>
+                                                        <Binding Path="MinTolerance" >
+                                                            <Binding.ValidationRules>
+                                                                <local:ImpellerArgsRule IsCanBeZero="false" />
+                                                            </Binding.ValidationRules>
+                                                        </Binding>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=methodChoice}" Value="2">
+                                                <Setter Property="Text">
+                                                    <Setter.Value>
+                                                        <Binding Path="MinStepDiff" >
+                                                            <Binding.ValidationRules>
+                                                                <local:ImpellerArgsRule IsCanBeZero="false" />
+                                                            </Binding.ValidationRules>
+                                                        </Binding>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>                                    
+                                </TextBox.Style>
+                            </TextBox>
+                            <TextBlock HorizontalAlignment="Left" Margin="6,0,0,18" Name="supportTypeHeader" Text="自由端支撑类型" Width="88" Grid.Row="2" Grid.ColumnSpan="2" />
+                            <RadioButton Content="自由" Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Left" Margin="6,17,0,0" Name="supportTypeFree" Height="16" VerticalAlignment="Top"  Checked="supportType_Checked" />
+                            <RadioButton Content="简支" Grid.ColumnSpan="2" Margin="78,17,0,0" Name="supportTypePinned" Grid.Row="2" Height="16" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Checked="supportType_Checked" />
+                            <Button Content="恢复默认值" Margin="35,0,6,0" Grid.Column="1" Grid.Row="2" Name="setToDefaultBtn" Background="{StaticResource Gradient1}" Height="33" VerticalAlignment="Top" Click="setToDefaultBtn_Click" ToolTip="恢复所有参数为默认值"/>
+                        </Grid>
+                    </GroupBox>
+                    
+                </Grid>
+                
+                <!--Result Data-->
+                <Grid Name="resultGrid" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="56" />
+                    </Grid.RowDefinitions>
+                    <!--Result image-->
+                    <Canvas Margin="6,25,6,8" Name="resultCanvas" SizeChanged="resultCanvas_SizeChanged" MinHeight="50"></Canvas>
+
+                    <GridSplitter ResizeDirection="Rows" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="5" Margin="6,0" Background="{StaticResource Gradient2}"></GridSplitter>
+
+                    <!--Result data-->
+                    <Grid Grid.Row="1" Name="resultDataGrid">
+                        <TextBox Name="resultBox" Margin="6,3,6,6" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="{StaticResource Gradient3}">
+                            
+                        </TextBox>
+                    </Grid>
+   
+                    
+                    <!--Result buttons-->
+                    <Grid Grid.Row="2" Name="resultBtnsGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Button  Name="copyResultBtn" Margin="6,0,3,3" Click="copyResultBtn_Click" Background="{StaticResource Gradient1}" Height="50" VerticalAlignment="Bottom">
+                            <Button.ToolTip>
+                                复制计算结果到剪切板，不含图像
+                            </Button.ToolTip>
+                            <TextBlock TextWrapping="Wrap">复制结果</TextBlock>
+                        </Button>
+                        <Button  Name="clearResultBtn" Margin="3,0,3,3"  Grid.Column="1" Click="clearResultBtn_Click" Background="{StaticResource Gradient1}" Height="50" VerticalAlignment="Bottom">
+                            <TextBlock TextWrapping="Wrap">清空结果</TextBlock>
+                        </Button>                        
+                        <Button  Name="resizeBtn"  Margin="3,0,3,3"  Grid.Column="2" Click="resizeBtn_Click" Tag="small" Background="{StaticResource Gradient1}" Height="50" VerticalAlignment="Bottom">
+                            <TextBlock TextWrapping="Wrap">扩大窗口</TextBlock>
+                        </Button>
+                        <Button  Name="exportResultBtn" Margin="3,0,6,3" Click="exportResultBtn_Click" Grid.Column="3" Background="{StaticResource Gradient1}" Height="50" VerticalAlignment="Bottom">
+                            <Button.ToolTip>
+                                导出结果为HTML报告；如果选择已经存在的结果HTML报告，则会追加内容
+                            </Button.ToolTip>
+                            <TextBlock TextWrapping="Wrap">导出结果..</TextBlock>
+                        </Button>
+                    </Grid>
+                    <TextBlock Name="resultHeader" Text="计算结果" VerticalAlignment="Top" Margin="6,6,6,0"  TextAlignment="Center" />
+                    
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>

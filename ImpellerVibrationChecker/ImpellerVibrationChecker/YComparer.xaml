@@ -1,0 +1,45 @@
+﻿ <!-- Copyright (C) 2012  Byzod
+   - Contact me : byzzod@gmail.com
+   -
+   - This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.  -->
+   
+<Window x:Class="ImpellerVibrationChecker.YComparer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="振型对比工具" MinHeight="280" MinWidth="380" Height="430" Width="555" Background="{StaticResource Gradient1}" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid  Name="btns" Height="300" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Button Content="运行" Margin="6" Name="runBtn" ToolTip="请先在主窗口里输入参数后再运行" Click="runBtn_Click" Background="{StaticResource Gradient1}" />
+            <Button Content="切换结果图" Margin="6" Name="toggleCanvasBtn" Grid.Row="1" Click="toggleCanvasBtn_Click" Background="{StaticResource Gradient1}" />
+            <Button Content="复制结果图片" Margin="6" Name="copyImageBtn" Grid.Row="2" Click="copyImageBtn_Click" Background="{StaticResource Gradient1}" />
+            <Button Content="导出结果图片" Margin="6" Name="exportImageBtn" Grid.Row="3" Click="exportImageBtn_Click" Background="{StaticResource Gradient1}" />
+            <Button Content="复制结果" Margin="6" Name="copyResultBtn" Grid.Row="4" Click="copyResultBtn_Click" Background="{StaticResource Gradient1}" />
+            <Button Content="关闭" Margin="6" Name="closetBtn" Grid.Row="5" Click="closetBtn_Click" Background="{StaticResource Gradient1}" />
+            
+        </Grid>
+        <Grid  Name="results" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <GridSplitter ResizeDirection="Rows" HorizontalAlignment="Stretch" Margin="6,0,6,0" Name="resultGridSplitter" Height="5" VerticalAlignment="Bottom" Background="{StaticResource Gradient2}"/>
+            <Canvas Margin="6,20,6,6" Name="resultCanvas" SizeChanged="resultCanvas_SizeChanged" MinHeight="80"></Canvas>
+            <Canvas Margin="6,20,6,6" Name="resultCompareCanvas" SizeChanged="resultCanvas_SizeChanged" MinHeight="80" Visibility="Hidden"></Canvas>
+            <TextBox Grid.Row="1" Margin="6" Name="resultBox" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="{StaticResource Gradient3}" />
+        </Grid>
+    </Grid>
+</Window>

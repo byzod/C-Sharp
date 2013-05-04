@@ -1,0 +1,17 @@
+﻿ <!-- Copyright (C) 2012  Byzod
+   - Contact me : byzzod@gmail.com
+   -
+   - This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.  -->
+   
+<UserControl x:Class="ImpellerVibrationChecker.RayleighConfigsGroup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" d:DesignHeight="145" d:DesignWidth="316">
+    <Grid>
+            
+    </Grid>
+</UserControl>
