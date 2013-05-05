@@ -65,24 +65,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GCJ_2012_R1A_A.cs" />
-    <Compile Include="GCJ_2012_R1A_B.cs" />
-    <Compile Include="GCJ_2013_QR_A.cs" />
-    <Compile Include="GCJ_2013_QR_B.cs" />
-    <Compile Include="GCJ_2013_QR_C.cs" />
-    <Compile Include="GCJ_2013_R1A_A.cs" />
-    <Compile Include="GCJ_2013_R1A_B.cs" />
-    <Compile Include="GCJ_2013_R1A_C.cs" />
-    <Compile Include="GCJ_2013_R1B_A.cs" />
-    <Compile Include="GCJ_2013_R1B_B.cs" />
-    <Compile Include="GCJ_2013_R1B_C.cs" />
-    <Compile Include="Test.cs" />
+    <Compile Include="Solvers\GCJ_2012_R1A_A.cs" />
+    <Compile Include="Solvers\GCJ_2012_R1A_B.cs" />
+    <Compile Include="Solvers\GCJ_2013_QR_A.cs" />
+    <Compile Include="Solvers\GCJ_2013_QR_B.cs" />
+    <Compile Include="Solvers\GCJ_2013_QR_C.cs" />
+    <Compile Include="Solvers\GCJ_2013_R1A_A.cs" />
+    <Compile Include="Solvers\GCJ_2013_R1A_B.cs" />
+    <Compile Include="Solvers\GCJ_2013_R1A_C.cs" />
+    <Compile Include="Solvers\GCJ_2013_R1B_A.cs" />
+    <Compile Include="Solvers\GCJ_2013_R1B_B.cs" />
+    <Compile Include="Solvers\GCJ_2013_R1B_C.cs" />
+    <Compile Include="Solvers\Test.cs" />
     <Compile Include="FileIO.cs" />
-    <Compile Include="GCJ_2012_WF_A.cs" />
-    <Compile Include="GCJ_2012_WF_E.cs" />
-    <Compile Include="GCJ_2013_BabyHeight.cs" />
-    <Compile Include="GCJ_2013_Hedgemony.cs" />
-    <Compile Include="GCJ_2013_OceanView.cs" />
+    <Compile Include="Solvers\GCJ_2012_WF_A.cs" />
+    <Compile Include="Solvers\GCJ_2012_WF_E.cs" />
+    <Compile Include="Solvers\GCJ_2013_BabyHeight.cs" />
+    <Compile Include="Solvers\GCJ_2013_Hedgemony.cs" />
+    <Compile Include="Solvers\GCJ_2013_OceanView.cs" />
     <Compile Include="IOHandler.cs" />
     <Compile Include="NewLines.cs" />
     <Compile Include="Options.cs" />
@@ -91,12 +91,12 @@
     <Compile Include="ProblemSolverHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GCJ_2012_R1A_C.cs" />
-    <Compile Include="GCJ_2013_QR_D.cs" />
-    <Compile Include="GCJ_2012_R1B_A.cs" />
-    <Compile Include="GCJ_2012_R1B_B.cs" />
-    <Compile Include="GCJ_2012_R1B_C.cs" />
-    <Compile Include="Test_SortComp.cs" />
+    <Compile Include="Solvers\GCJ_2012_R1A_C.cs" />
+    <Compile Include="Solvers\GCJ_2013_QR_D.cs" />
+    <Compile Include="Solvers\GCJ_2012_R1B_A.cs" />
+    <Compile Include="Solvers\GCJ_2012_R1B_B.cs" />
+    <Compile Include="Solvers\GCJ_2012_R1B_C.cs" />
+    <Compile Include="Solvers\Test_SortComp.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
