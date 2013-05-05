@@ -110,11 +110,11 @@ namespace Machine
 			}
 
 			// Get input
-			List<List<List<double>>> tasks =
-				ProblemSolverHelper.ConvertToCodeJamStandardFormat(ProblemSolverHelper.ConvertToDataLists<double>(option.Input.Content[0]));
+			List<Task> tasks = this.GetTask(option.Input.Content[0]);
 
 			// Result
-			List<double> results = new List<double>(tasks.Count);
+			List<int> results = new List<int>(tasks.Count);
+			//List<double> results = new List<double>(tasks.Count);
 
 			// Solver
 			foreach (var task in tasks)
@@ -130,6 +130,41 @@ namespace Machine
 					"Case #" + (i + 1) + ": " + results[i]
 				);
 			}
+		}
+
+		/// <summary>
+		/// Get task array
+		/// </summary>
+		/// <param name="data">Raw input string</param>
+		/// <returns>List of task array</returns>
+		List<Task> GetTask(List<string> data)
+		{
+			int count = int.Parse(data[0]);
+			List<Task> tasks = new List<Task>(count);
+
+			for (int i = 0; i < count; i++)
+			{
+				Task task = new Task();
+
+				tasks.Add(task);
+			}
+
+			return tasks;
+		}
+
+		/// <summary>
+		/// Task object
+		/// </summary>
+		class Task
+		{
+			public int IntProp { get; set; }
+
+			public Task(int integer)
+			{
+				this.IntProp = integer;
+			}
+
+			public Task(){	}
 		}
 	}
 

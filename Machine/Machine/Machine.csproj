@@ -97,6 +97,7 @@
     <Compile Include="Solvers\GCJ_2012_R1B_B.cs" />
     <Compile Include="Solvers\GCJ_2012_R1B_C.cs" />
     <Compile Include="Solvers\Test_SortComp.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

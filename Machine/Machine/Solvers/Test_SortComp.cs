@@ -52,7 +52,7 @@ namespace Machine
 
 			// Get input
 			int arrSize = int.Parse(option.Input.Content[0][0]);
-			int cycle = 100000;
+			//int cycle = 100000;
 			int sizeForQuick = arrSize * arrSize;
 			int sizeForBubble = arrSize / (int)Math.Log(arrSize, 2) * 30;
 

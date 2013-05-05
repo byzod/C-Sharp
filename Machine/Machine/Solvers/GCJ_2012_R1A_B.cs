@@ -50,8 +50,7 @@ namespace Machine
 			}
 
 			// Get input
-			List<List<List<Int32>>> krTasks = 
-				ProblemSolverHelper.ConvertToCodeJamStandardFormat(ProblemSolverHelper.ConvertToDataLists<Int32>(option.Input.Content[0]));
+			List<List<List<Int32>>> krTasks = this.GetTask(ProblemSolverHelper.ConvertToDataLists<Int32>(option.Input.Content[0]));
 
 			// Result
 			List<Int32> playLevelsCount = new List<int>(krTasks.Count);
@@ -185,6 +184,49 @@ namespace Machine
 			}
 		}
 
+
+		public List<List<List<Int32>>> GetTask(List<List<Int32>> int32Lists)
+		{
+			List<List<List<Int32>>> taskLists;
+
+			if (int32Lists.Count <= 0 || (int32Lists.Count > 0 && int32Lists[0].Count <= 0))
+			{
+				taskLists = new List<List<List<Int32>>>(0);
+			}
+			else
+			{
+				// Line 0 is tasks count
+				taskLists = new List<List<List<Int32>>>(int32Lists[0][0]);
+			}
+
+			// Line 0 is tasks count, tasks start from line 1
+			for (int i = 1; i < int32Lists.Count; i++)
+			{
+				List<List<Int32>> dataLists;
+				if (int32Lists[i].Count <= 0)
+				{
+					dataLists = new List<List<int>>(0);
+				}
+				else
+				{
+					dataLists = new List<List<int>>(int32Lists[i][0]);
+				}
+
+				// Each task chunk consist of a line of task count N
+				// And fallowing N lines of task data
+				for (int j = 0; j < dataLists.Capacity; j++)
+				{
+					dataLists.Add(int32Lists[i + j + 1]);
+				}
+
+				taskLists.Add(dataLists);
+
+				// Update the position
+				i += dataLists.Capacity;
+			}
+
+			return taskLists;
+		}
 
 		class KRLevel
 		{

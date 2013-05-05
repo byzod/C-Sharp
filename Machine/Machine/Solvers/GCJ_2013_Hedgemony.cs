@@ -50,8 +50,7 @@ namespace Machine
 			}
 
 			// Data parse
-			List<List<Int32>> inputData =
-				ProblemSolverHelper.ConvertToCodeJamInputInOneLineFormat(ProblemSolverHelper.ConvertToDataLists<Int32>(option.Input.Content[0]));
+			List<List<Int32>> inputData = this.GetTask(ProblemSolverHelper.ConvertToDataLists<Int32>(option.Input.Content[0]));
 
 			List<double> bushesHeights = new List<double>(inputData.Count);
 
@@ -85,6 +84,32 @@ namespace Machine
 					"Case #" + (i + 1) + ": " + bushesHeights[i]
 				);
 			}
+		}
+
+
+		public List<List<Int32>> GetTask(List<List<Int32>> int32Lists)
+		{
+			List<List<Int32>> dataLists;
+
+			if (int32Lists.Count <= 0 || (int32Lists.Count > 0 && int32Lists[0].Count <= 0))
+			{
+				dataLists = new List<List<Int32>>(0);
+			}
+			else
+			{
+				dataLists = new List<List<Int32>>(int32Lists[0][0]);
+			}
+
+			// Line 0 is lines count, data start from line 1
+			for (int i = 1; i < int32Lists.Count; i++)
+			{
+				// Each data chunk consist of two lines, the first one is data count
+				i++;
+				// The second line is data itself
+				dataLists.Add(int32Lists[i]);
+			}
+
+			return dataLists;
 		}
 	}
 }

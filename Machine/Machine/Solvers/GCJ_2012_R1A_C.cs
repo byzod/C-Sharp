@@ -87,7 +87,7 @@ namespace Machine
 		/// <returns>Road state list</returns>
 		List<List<CarState>> GetRoadStates(List<string> data)
 		{
-			List<List<List<string>>> roadsStringList = ProblemSolverHelper.ConvertToCodeJamStandardStringLists(data);
+			List<List<List<string>>> roadsStringList = this.GetTask(data);
 			List<List<CarState>> roadStates = new List<List<CarState>>(Convert.ToInt32(data[0]));
 
 			foreach (var roadCars in roadsStringList)
@@ -374,6 +374,55 @@ namespace Machine
 			}
 
 			return aCompareToB;
+		}
+
+
+		public List<List<List<string>>> GetTask(List<string> stringList)
+		{
+			List<List<List<string>>> taskLists = new List<List<List<string>>>(stringList.Count);
+			char[] splitCharacters = new char[1] { ' ' };
+
+			if (stringList.Count <= 0 || (stringList.Count > 0 && stringList[0].Length <= 0))
+			{
+				taskLists = new List<List<List<string>>>(0);
+			}
+			else
+			{
+				// Line 0 is tasks count
+				taskLists = new List<List<List<string>>>(Convert.ToInt32(stringList[0]));
+			}
+
+			// Line 0 is tasks count, tasks start from line 1
+			for (int i = 1; i < stringList.Count; i++)
+			{
+				List<List<string>> dataList;
+				if (stringList[i].Length <= 0)
+				{
+					dataList = new List<List<string>>(0);
+				}
+				else
+				{
+					dataList = new List<List<string>>(Convert.ToInt32(stringList[i]));
+				}
+
+				// Each task chunk consist of a line of task count N
+				// And fallowing N lines of task data
+				for (int j = 0; j < dataList.Capacity; j++)
+				{
+					List<string> fragments =
+						stringList[i + j + 1]
+						.Split(splitCharacters, StringSplitOptions.RemoveEmptyEntries)
+						.ToList();
+					dataList.Add(fragments);
+				}
+
+				taskLists.Add(dataList);
+
+				// Update the position
+				i += dataList.Capacity;
+			}
+
+			return taskLists;
 		}
 
 		class CarState
