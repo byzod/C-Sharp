@@ -46,16 +46,8 @@ namespace Machine
 			option.IsBinaryLoad = false;
 			option.IsBinaryWrite = false;
 
-			//option.LoadContent();
-			//option.Output.Content = option.Input.Content;
-
-			option.Output.Content.Add(new List<string>(1));
-
-			string s = "c";
-			string[] sa = new string[] { "a", "b" };
-			s += sa;
-
-			option.Output.Content[0].Add(s);
+            option.LoadContent();
+            option.Output.Content = option.Input.Content;
 		}
 	}
 

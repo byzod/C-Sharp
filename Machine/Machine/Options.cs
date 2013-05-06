@@ -379,14 +379,15 @@ namespace Machine
 								{
 									this.Input.Paths = optionArgs;
 								}
-								else if (this.Input.Mode == InputMode.String)
-								{
-									for (int j = 0; j < optionArgs.Count; j++)
-									{
-										//this.Input.Content.Add(io.Read(optionArgs[j], this.NewLine));
-										this.Input.Content.Add(io.Read(optionArgs[j], "\r\n"));
-									}
-								}
+                                else if (this.Input.Mode == InputMode.String)
+                                {
+                                    this.Input.Content.Add(new List<string>(optionArgs.Count));
+
+                                    for (int j = 0; j < optionArgs.Count; j++)
+                                    {
+                                        this.Input.Content[0].Add(optionArgs[j]);
+                                    }
+                                }
 							}
 
 							break;
