@@ -1,0 +1,1 @@
+﻿A simple GUI for Machine project
