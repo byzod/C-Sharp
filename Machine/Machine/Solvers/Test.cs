@@ -156,7 +156,10 @@ namespace Machine
 				this.IntProp = integer;
 			}
 
-			public Task(){	}
+			public Task()
+			{
+
+			}
 		}
 	}
 
